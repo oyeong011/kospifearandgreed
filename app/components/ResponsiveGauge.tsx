@@ -70,12 +70,31 @@ const ResponsiveGauge: React.FC<ResponsiveGaugeProps> = ({ value }) => {
       .attr("transform", `translate(${width / 2},${height - margin.bottom})`);
 
     // Draw background arc (white)
-    gaugeGroup.append("path").attr("d", arc()).style("fill", "#ffffff");
+    gaugeGroup
+      .append("path")
+      .attr(
+        "d",
+        arc({
+          innerRadius,
+          outerRadius,
+          startAngle: -Math.PI / 2,
+          endAngle: Math.PI / 2,
+        }) || ""
+      )
+      .style("fill", "#ffffff");
 
     // Draw filled arc
     const filledArc = gaugeGroup
       .append("path")
-      .attr("d", arc.endAngle(scale(currentValue))())
+      .attr(
+        "d",
+        arc({
+          innerRadius,
+          outerRadius,
+          startAngle: -Math.PI / 2,
+          endAngle: scale(currentValue),
+        }) || ""
+      )
       .style("fill", colorScale(currentValue));
 
     // Define segments
@@ -98,7 +117,15 @@ const ResponsiveGauge: React.FC<ResponsiveGaugeProps> = ({ value }) => {
 
       gaugeGroup
         .append("path")
-        .attr("d", segmentArc)
+        .attr(
+          "d",
+          segmentArc({
+            innerRadius,
+            outerRadius,
+            startAngle: scale(segment.start),
+            endAngle: scale(segment.end),
+          }) || null
+        )
         .attr("fill", "none")
         .attr(
           "stroke",
@@ -194,11 +221,20 @@ const ResponsiveGauge: React.FC<ResponsiveGaugeProps> = ({ value }) => {
       filledArc
         .transition()
         .duration(50)
-        .attrTween("d", function (d) {
-          const interpolate = d3.interpolate(d.endAngle, scale(currentValue));
-          return function (t) {
-            d.endAngle = interpolate(t);
-            return arc(d);
+        .attrTween("d", function (this: SVGPathElement) {
+          return function (t: number) {
+            const interpolatedAngle = d3.interpolate(
+              scale(0),
+              scale(currentValue)
+            )(t);
+            return (
+              arc({
+                innerRadius,
+                outerRadius,
+                startAngle: -Math.PI / 2,
+                endAngle: interpolatedAngle,
+              }) || ""
+            );
           };
         })
         .style("fill", colorScale(currentValue));
