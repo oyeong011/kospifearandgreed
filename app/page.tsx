@@ -1,113 +1,126 @@
-import Image from "next/image";
+"use client";
+import React from "react";
+import ResponsiveGauge from "./components/ResponsiveGauge";
+import LineChart from "./components/LineChart";
 
-export default function Home() {
+const getDates = (startDate, endDate) => {
+  let dates = [];
+  let currentDate = new Date(startDate);
+  while (currentDate <= endDate) {
+    dates.push(new Date(currentDate));
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+  return dates;
+};
+
+const dates = getDates(new Date("2023-08-01"), new Date("2024-07-31"));
+
+// 1. 시장 모멘텀 (S&P 500 지수와 125일 이동평균 비교)
+const momentumData = dates.map((date, index) => {
+  const baseValue = 4300 + Math.sin(index / 30) * 200 + index / 2;
+  return {
+    date: date,
+    value: baseValue + Math.random() * 50 - 25,
+    ma: baseValue - 100 + Math.random() * 20 - 10,
+  };
+});
+
+// 2. 주가 강도 (S&P 500 중 신고가/신저가 비율)
+const priceStrengthData = dates.map((date, index) => ({
+  date: date,
+  value: 0.5 + Math.sin(index / 60) * 0.3 + Math.random() * 0.2,
+}));
+
+// 3. 주가 폭 (상승 종목 대비 하락 종목 수)
+const priceBreadthData = dates.map((date, index) => ({
+  date: date,
+  value: 1 + Math.sin(index / 45) * 0.5 + Math.random() * 0.3,
+}));
+
+// 4. 풋/콜 옵션 비율
+const putCallOptionsData = dates.map((date, index) => {
+  const baseValue = 0.95 + Math.sin(index / 90) * 0.1;
+  return {
+    date: date,
+    value: baseValue + Math.random() * 0.1 - 0.05,
+    ma: baseValue + 0.02 + Math.random() * 0.04 - 0.02,
+  };
+});
+
+// 5. 시장 변동성 (VIX)
+const marketVolatilityData = dates.map((date, index) => {
+  const baseValue = 16 + Math.sin(index / 60) * 3;
+  return {
+    date: date,
+    value: baseValue + Math.random() * 2 - 1,
+    ma: baseValue + 0.5 + Math.random() * 1 - 0.5,
+  };
+});
+
+// 6. 안전자산 수요 (국채 수익률 스프레드)
+const safeHavenDemandData = dates.map((date, index) => ({
+  date: date,
+  value: 1.5 + Math.sin(index / 75) * 0.5 + Math.random() * 0.3 - 0.15,
+}));
+
+// 7. 정크본드 수요 (정크본드와 투자등급 채권 스프레드)
+const junkBondDemandData = dates.map((date, index) => ({
+  date: date,
+  value: 3.9 + Math.sin(index / 90) * 0.2 + Math.random() * 0.2 - 0.1,
+}));
+
+export default function Dashboard() {
+  const fearGreedIndex = 45; // Example value, replace with actual data
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 w-full max-w-5xl items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.tsx</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <div className="grid grid-cols-[400px_1fr] grid-rows-[auto_1fr] gap-5 p-5 h-screen">
+      <div className="col-start-1 row-start-1">
+        <h1 className="text-2xl font-bold mb-4">Fear & Greed Index</h1>
+        <ResponsiveGauge value={fearGreedIndex} />
       </div>
 
-      <div className="relative z-[-1] flex place-items-center before:absolute before:h-[300px] before:w-full before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 sm:before:w-[480px] sm:after:w-[240px] before:lg:h-[360px]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+      <div className="col-start-1 row-start-2 overflow-y-auto pr-5 space-y-8">
+        <LineChart
+          data={momentumData}
+          showMovingAverage={true}
+          title="Market Momentum"
+        />
+        <LineChart
+          data={priceStrengthData}
+          showMovingAverage={false}
+          title="Stock Price Strength"
+        />
+        <LineChart
+          data={priceBreadthData}
+          showMovingAverage={true}
+          title="Stock Price Breadth"
+        />
+        <LineChart
+          data={putCallOptionsData}
+          showMovingAverage={false}
+          title="Put/Call Options Ratio"
+        />
+        <LineChart
+          data={marketVolatilityData}
+          showMovingAverage={true}
+          title="Market Volatility"
+        />
+        <LineChart
+          data={safeHavenDemandData}
+          showMovingAverage={false}
+          title="Safe Haven Demand"
+        />
+        <LineChart
+          data={junkBondDemandData}
+          showMovingAverage={true}
+          title="Junk Bond Demand"
         />
       </div>
 
-      <div className="mb-32 grid text-center lg:mb-0 lg:w-full lg:max-w-5xl lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-sm opacity-50">
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className="mb-3 text-2xl font-semibold">
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className="m-0 max-w-[30ch] text-balance text-sm opacity-50">
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div className="col-start-2 row-span-2 pl-5 border-l border-gray-300">
+        <h2 className="text-xl font-semibold mb-4">포트폴리오 추천</h2>
+        <p>준비 중입니다...</p>
       </div>
-    </main>
+    </div>
   );
 }
