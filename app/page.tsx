@@ -3,7 +3,7 @@ import React from "react";
 import ResponsiveGauge from "./components/ResponsiveGauge";
 import LineChart from "./components/LineChart";
 
-const getDates = (startDate, endDate) => {
+const getDates = (startDate: any, endDate: any) => {
   let dates = [];
   let currentDate = new Date(startDate);
   while (currentDate <= endDate) {
@@ -70,7 +70,7 @@ const junkBondDemandData = dates.map((date, index) => ({
 }));
 
 export default function Dashboard() {
-  const fearGreedIndex = 45; // Example value, replace with actual data
+  const fearGreedIndex = 90; // Example value, replace with actual data
 
   return (
     <div className="grid grid-cols-[400px_1fr] grid-rows-[auto_1fr] gap-5 p-5 h-screen">

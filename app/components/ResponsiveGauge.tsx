@@ -216,6 +216,29 @@ const ResponsiveGauge: React.FC<ResponsiveGaugeProps> = ({ value }) => {
       .attr("font-weight", "bold")
       .text(Math.round(currentValue));
 
+    // Add needle
+    const needleLength = outerRadius - innerRadius;
+    const needleRadius = 5;
+    const needle = gaugeGroup.append("g").attr("class", "needle");
+
+    needle
+      .append("path")
+      .attr(
+        "d",
+        `M ${-needleRadius} 0 L 0 ${-needleLength} L ${needleRadius} 0 Z`
+      )
+      .attr("fill", "#444");
+
+    needle.append("circle").attr("r", needleRadius).attr("fill", "#444");
+
+    // 초기 바늘 위치 설정
+    updateNeedlePosition(currentValue);
+
+    // 바늘 위치 업데이트 함수
+    function updateNeedlePosition(value: number) {
+      const angle = scale(value);
+      needle.attr("transform", `rotate(${(angle * 180) / Math.PI})`);
+    }
     // Update the gauge when currentValue changes
     d3.select(svgRef.current).on("change", () => {
       filledArc
@@ -254,6 +277,15 @@ const ResponsiveGauge: React.FC<ResponsiveGaugeProps> = ({ value }) => {
         );
 
       valueText.text(Math.round(currentValue));
+
+      // Update needle position
+      needle
+        .transition()
+        .duration(50)
+        .attr(
+          "transform",
+          `rotate(${(scale(currentValue) * 180) / Math.PI - 180})`
+        );
     });
   }, [currentValue]);
 
