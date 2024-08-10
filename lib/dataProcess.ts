@@ -7,9 +7,17 @@ interface DataPoint {
 }
 
 async function readCSV(filename: string): Promise<any[]> {
-  const response = await fetch(`/data/${filename}`);
-  const fileContent = await response.text();
-  return parse(fileContent, { columns: true, skip_empty_lines: true });
+  try {
+    const response = await fetch(`/data/${filename}`);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const fileContent = await response.text();
+    return parse(fileContent, { columns: true, skip_empty_lines: true });
+  } catch (error) {
+    console.error(`Error reading CSV file ${filename}:`, error);
+    throw error;
+  }
 }
 
 function filterDataByDateRange(
@@ -45,17 +53,17 @@ export async function getFGScore(
 
 export async function getMarketData(startDate: Date, endDate: Date) {
   const momentumData = await getMarketMomentum(startDate, endDate);
-  const priceStrengthData = await getPriceStrength(startDate, endDate);
-  const priceBreadthData = await getPriceBreadth(startDate, endDate);
   const putCallOptionsData = await getPCRatio(startDate, endDate);
   const marketVolatilityData = await getMarketVolatility(startDate, endDate);
   const safeHavenDemandData = await getSafeHavenDemand(startDate, endDate);
   const junkBondDemandData = await getJunkBondDemand(startDate, endDate);
+  const priceStrengthData = await getKRXReturn(startDate, endDate);
+  const msiData = await getMSI(startDate, endDate);
 
   return {
     momentumData,
     priceStrengthData,
-    priceBreadthData,
+    msiData,
     putCallOptionsData,
     marketVolatilityData,
     safeHavenDemandData,
@@ -63,7 +71,7 @@ export async function getMarketData(startDate: Date, endDate: Date) {
   };
 }
 
-async function getMarketMomentum(
+export async function getMarketMomentum(
   startDate: Date,
   endDate: Date
 ): Promise<DataPoint[]> {
@@ -76,31 +84,7 @@ async function getMarketMomentum(
   return filterDataByDateRange(parsedData, startDate, endDate);
 }
 
-async function getPriceStrength(
-  startDate: Date,
-  endDate: Date
-): Promise<DataPoint[]> {
-  const data = await readCSV("z_price_strength.csv");
-  const parsedData = data.map((row) => ({
-    date: new Date(row.date),
-    value: parseFloat(row.price_strength),
-  }));
-  return filterDataByDateRange(parsedData, startDate, endDate);
-}
-
-async function getPriceBreadth(
-  startDate: Date,
-  endDate: Date
-): Promise<DataPoint[]> {
-  const data = await readCSV("z_price_breadth.csv");
-  const parsedData = data.map((row) => ({
-    date: new Date(row.date),
-    value: parseFloat(row.price_breadth),
-  }));
-  return filterDataByDateRange(parsedData, startDate, endDate);
-}
-
-async function getPCRatio(
+export async function getPCRatio(
   startDate: Date,
   endDate: Date
 ): Promise<DataPoint[]> {
@@ -112,7 +96,7 @@ async function getPCRatio(
   return filterDataByDateRange(parsedData, startDate, endDate);
 }
 
-async function getMarketVolatility(
+export async function getMarketVolatility(
   startDate: Date,
   endDate: Date
 ): Promise<DataPoint[]> {
@@ -125,7 +109,7 @@ async function getMarketVolatility(
   return filterDataByDateRange(parsedData, startDate, endDate);
 }
 
-async function getSafeHavenDemand(
+export async function getSafeHavenDemand(
   startDate: Date,
   endDate: Date
 ): Promise<DataPoint[]> {
@@ -137,7 +121,7 @@ async function getSafeHavenDemand(
   return filterDataByDateRange(parsedData, startDate, endDate);
 }
 
-async function getJunkBondDemand(
+export async function getJunkBondDemand(
   startDate: Date,
   endDate: Date
 ): Promise<DataPoint[]> {
@@ -172,3 +156,6 @@ export async function getMSI(
   }));
   return filterDataByDateRange(parsedData, startDate, endDate);
 }
+
+// Utility functions
+export { filterDataByDateRange };

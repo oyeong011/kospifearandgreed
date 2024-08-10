@@ -2,9 +2,17 @@
 
 import React, { useState } from "react";
 
-const DateRangePicker = ({ onDateRangeChange }) => {
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+const DateRangePicker = ({
+  onDateRangeChange,
+  mockStartDate,
+  mockEndDate,
+}: {
+  onDateRangeChange: (start: string, end: string) => void;
+  mockStartDate: string;
+  mockEndDate: string;
+}) => {
+  const [startDate, setStartDate] = useState(mockStartDate);
+  const [endDate, setEndDate] = useState(mockEndDate);
 
   const handleSubmit = (e) => {
     e.preventDefault();
