@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
@@ -34,6 +36,8 @@ const LineChart: React.FC<LineChartProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  console.log(title);
+  console.log(data);
   useEffect(() => {
     if (!svgRef.current || !containerRef.current) return;
 
