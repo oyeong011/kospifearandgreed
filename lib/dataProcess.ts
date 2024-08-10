@@ -51,7 +51,10 @@ export async function getFGScore(
   }
 }
 
-export async function getMarketData(startDate: Date, endDate: Date) {
+export async function getMarketData(
+  startDate: Date,
+  endDate: Date
+): Promise<any> {
   const momentumData = await getMarketMomentum(startDate, endDate);
   const putCallOptionsData = await getPCRatio(startDate, endDate);
   const marketVolatilityData = await getMarketVolatility(startDate, endDate);

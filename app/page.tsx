@@ -28,7 +28,6 @@ export default function Dashboard() {
 
       const data = await getMarketData(startDate, endDate);
 
-      console.log("data", data);
       setMarketData(data);
     };
 

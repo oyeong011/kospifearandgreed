@@ -104,7 +104,7 @@ const LineChart: React.FC<LineChartProps> = ({
 
       // Format y-axis ticks based on the data range
       const yRange = Math.abs(yDomain[1] - yDomain[0]);
-      let yAxisTickFormat: (n: number) => string;
+      let yAxisTickFormat: (n: d3.NumberValue) => string;
 
       if (yRange >= 1000000) {
         yAxisTickFormat = d3.format(".3s"); // Use SI-prefix for large numbers
