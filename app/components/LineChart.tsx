@@ -36,8 +36,6 @@ const LineChart: React.FC<LineChartProps> = ({
   const svgRef = useRef<SVGSVGElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  console.log(title);
-  console.log(data);
   useEffect(() => {
     if (!svgRef.current || !containerRef.current) return;
 
