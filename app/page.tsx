@@ -13,7 +13,7 @@ export default function Dashboard() {
   const [startDate, setStartDate] = useState(new Date("2023-08-01"));
   const [endDate, setEndDate] = useState(new Date("2024-06-31"));
   const [fearGreedIndexDate, setFearGreedIndexDate] = useState(new Date());
-  const [fearGreedIndex, setFearGreedIndex] = useState(50);
+  const [fearGreedIndex, setFearGreedIndex] = useState(60);
   const [marketData, setMarketData] = useState({
     momentumData: [],
     priceStrengthData: [],

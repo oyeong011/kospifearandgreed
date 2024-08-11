@@ -3,11 +3,15 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
+interface DataItem {
+  asset: string;
+  value: number;
+}
+
 const PortfolioPieChart = () => {
   const svgRef = useRef<SVGSVGElement | null>(null);
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const data = [
+  const data: DataItem[] = [
     { asset: "채권", value: 30 },
     { asset: "현금", value: 10 },
     { asset: "주식", value: 30 },
@@ -23,17 +27,17 @@ const PortfolioPieChart = () => {
 
     const width = svgRef.current.clientWidth;
     const height = svgRef.current.clientHeight;
-    const radius = Math.min(width, height) / 2;
+    const radius = (Math.min(width, height) / 2) * 0.8;
 
     const color = d3
       .scaleOrdinal<string>()
       .domain(data.map((d) => d.asset))
       .range(d3.schemeCategory10);
 
-    const pie = d3.pie<any>().value((d) => d.value);
+    const pie = d3.pie<DataItem>().value((d) => d.value);
 
     const arc = d3
-      .arc<d3.PieArcDatum<any>>()
+      .arc<d3.PieArcDatum<DataItem>>()
       .innerRadius(0)
       .outerRadius(radius);
 
@@ -51,18 +55,69 @@ const PortfolioPieChart = () => {
       .attr("stroke", "#fff")
       .attr("stroke-width", "2px");
 
-    // Add labels
+    // Add labels inside the pie chart
     pieGroup
       .selectAll("text")
       .data(pie(data))
       .enter()
       .append("text")
       .attr("transform", (d) => `translate(${arc.centroid(d)})`)
+      .attr("dy", ".35em")
       .attr("text-anchor", "middle")
-      .attr("dy", "0.35em")
-      .text((d) => `${d.data.asset} (${d.data.value}%)`)
-      .style("fill", "#000")
-      .style("font-size", "12px");
+      .style("fill", "#fff")
+      .style("font-size", "12px")
+      .style("font-weight", "bold")
+      .text((d) => {
+        const percent = Math.round(
+          (d.value / d3.sum(data, (d) => d.value)) * 100
+        );
+        return percent > 5 ? `${d.data.asset}\n${percent}%` : "";
+      })
+      .call(wrapText, 40);
+
+    // Function to wrap text
+    function wrapText(
+      selections: d3.Selection<
+        SVGTextElement,
+        d3.PieArcDatum<DataItem>,
+        SVGGElement,
+        unknown
+      >,
+      width: number
+    ) {
+      selections.each(function () {
+        const text = d3.select(this);
+        const words = text.text().split(/\s+/).reverse();
+        let word;
+        let line: string[] = [];
+        let lineNumber = 0;
+        const lineHeight = 1.1; // ems
+        const y = text.attr("y");
+        const dy = parseFloat(text.attr("dy") || "0");
+        let tspan = text
+          .text(null)
+          .append("tspan")
+          .attr("x", 0)
+          .attr("y", y)
+          .attr("dy", dy + "em");
+
+        while ((word = words.pop())) {
+          line.push(word);
+          tspan.text(line.join(" "));
+          if ((tspan.node()?.getComputedTextLength() || 0) > width) {
+            line.pop();
+            tspan.text(line.join(" "));
+            line = [word];
+            tspan = text
+              .append("tspan")
+              .attr("x", 0)
+              .attr("y", y)
+              .attr("dy", `${++lineNumber * lineHeight + dy}em`)
+              .text(word);
+          }
+        }
+      });
+    }
   }, [data]);
 
   return (
