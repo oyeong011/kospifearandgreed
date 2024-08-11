@@ -208,14 +208,13 @@ const LineChart: React.FC<LineChartProps> = ({
   // 데이터가 없을 경우 메시지 표시
   if (!data || data.length === 0) {
     return (
+      // 스켈레톤 UI를 위해 motion.div 사용
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
-        className="flex justify-center items-center h-[400px] text-gray-500"
-      >
-        No data available
-      </motion.div>
+        className="flex items-center justify-center w-full h-96 bg-gray-100 rounded-lg"
+      ></motion.div>
     );
   }
 
