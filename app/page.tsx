@@ -4,6 +4,9 @@ import ResponsiveGauge from "./components/ResponsiveGauge";
 import LineChart from "./components/LineChart";
 import DateRangePicker from "./components/DateRangePicker";
 import { getFGScore, getMarketData } from "@/lib/dataProcess";
+import SingleDatePicker from "./components/SingleDatePicker";
+import PortfolioPieChart from "./components/content/PortfolioPieChart";
+import NewsSection from "./components/content/NewsSection";
 
 export default function Dashboard() {
   const [startDate, setStartDate] = useState(new Date("2023-08-01"));
@@ -27,7 +30,6 @@ export default function Dashboard() {
       }
 
       const data = await getMarketData(startDate, endDate);
-
       setMarketData(data);
     };
 
@@ -39,60 +41,59 @@ export default function Dashboard() {
     setEndDate(new Date(end));
   };
 
+  const handleSingleDateChange = (date: string) => {
+    setFearGreedIndex(50);
+  };
+
   return (
-    <div className="grid grid-cols-[400px_1fr] grid-rows-[auto_1fr] gap-5 p-5 h-screen">
-      <div className="col-start-1 row-start-1">
-        <h1 className="text-2xl font-bold mb-4">Fear & Greed Index</h1>
-        <ResponsiveGauge value={fearGreedIndex} />
-        <DateRangePicker
-          onDateRangeChange={handleDateRangeChange}
-          mockStartDate={startDate.toISOString().split("T")[0]}
-          mockEndDate={endDate.toISOString().split("T")[0]}
-        />
-      </div>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-8 text-center">Market Dashboard</h1>
 
-      <div className="col-start-1 row-start-2 overflow-y-auto pr-5 space-y-8">
-        <LineChart
-          data={marketData.momentumData}
-          showMovingAverage={true}
-          title="Market Momentum"
-        />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="lg:col-span-2 space-y-8">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold mb-4">Fear & Greed Index</h2>
+            <ResponsiveGauge value={fearGreedIndex} />
+            <SingleDatePicker onDateChange={handleSingleDateChange} />
+          </div>
 
-        <LineChart
-          data={marketData.priceStrengthData}
-          showMovingAverage={false}
-          title="Stock Price Strength"
-        />
-        <LineChart
-          data={marketData.msiData}
-          showMovingAverage={false}
-          title="Stock Price Breadth"
-        />
-        <LineChart
-          data={marketData.putCallOptionsData}
-          showMovingAverage={false}
-          title="Put/Call Options Ratio"
-        />
-        <LineChart
-          data={marketData.marketVolatilityData}
-          showMovingAverage={true}
-          title="Market Volatility"
-        />
-        <LineChart
-          data={marketData.safeHavenDemandData}
-          showMovingAverage={false}
-          title="Safe Haven Demand"
-        />
-        <LineChart
-          data={marketData.junkBondDemandData}
-          showMovingAverage={false}
-          title="Junk Bond Demand"
-        />
-      </div>
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold mb-4">Market Trends</h2>
+            <DateRangePicker
+              onDateRangeChange={handleDateRangeChange}
+              mockStartDate={startDate.toISOString().split("T")[0]}
+              mockEndDate={endDate.toISOString().split("T")[0]}
+            />
+            <div className="space-y-8 mt-6">
+              {Object.entries(marketData).map(([key, data]) => (
+                <LineChart
+                  key={key}
+                  data={data}
+                  showMovingAverage={
+                    key === "momentumData" || key === "marketVolatilityData"
+                  }
+                  title={key
+                    .replace(/([A-Z])/g, " $1")
+                    .replace(/^./, (str) => str.toUpperCase())}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
 
-      <div className="col-start-2 row-span-2 pl-5 border-l border-gray-300">
-        <h2 className="text-xl font-semibold mb-4">포트폴리오 추천</h2>
-        <p>준비 중입니다...</p>
+        <div className="space-y-8">
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold mb-4">
+              오늘의 추천 포트폴리오 구성
+            </h2>
+            <PortfolioPieChart />
+          </div>
+
+          <div className="bg-white rounded-lg shadow-md p-6">
+            <h2 className="text-2xl font-semibold mb-4">Latest News</h2>
+            <NewsSection />
+          </div>
+        </div>
       </div>
     </div>
   );
