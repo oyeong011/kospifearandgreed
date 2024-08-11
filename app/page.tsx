@@ -7,10 +7,12 @@ import { getFGScore, getMarketData } from "@/lib/dataProcess";
 import SingleDatePicker from "./components/SingleDatePicker";
 import PortfolioPieChart from "./components/content/PortfolioPieChart";
 import NewsSection from "./components/content/NewsSection";
+import Navbar from "./components/Navbar/Navbar";
 
 export default function Dashboard() {
   const [startDate, setStartDate] = useState(new Date("2023-08-01"));
   const [endDate, setEndDate] = useState(new Date("2024-06-31"));
+  const [fearGreedIndexDate, setFearGreedIndexDate] = useState(new Date());
   const [fearGreedIndex, setFearGreedIndex] = useState(50);
   const [marketData, setMarketData] = useState({
     momentumData: [],
@@ -24,7 +26,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const fgScore = await getFGScore(new Date("2024-07-31"));
+      const fgScore = await getFGScore(fearGreedIndexDate);
       if (fgScore) {
         setFearGreedIndex(fgScore.value);
       }
@@ -34,39 +36,27 @@ export default function Dashboard() {
     };
 
     fetchData();
-  }, [startDate, endDate]);
+  }, [startDate, endDate, fearGreedIndexDate]);
 
   const handleDateRangeChange = (start: string, end: string) => {
     setStartDate(new Date(start));
     setEndDate(new Date(end));
   };
 
-  const handleSingleDateChange = (date: string) => {
-    setFearGreedIndex(50);
+  const handleSingleDateChange = async (date: string) => {
+    await setFearGreedIndexDate(new Date(date));
+    const fgData = await getFGScore(fearGreedIndexDate);
+    if (fgData) {
+      setFearGreedIndex(fgData.value);
+      return;
+    }
+    setFearGreedIndex(52);
   };
 
   return (
     <div className="bg-gray-100 min-h-screen">
       {/* Navigation Bar */}
-      <nav className="bg-white shadow-md">
-        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <div className="text-2xl font-bold text-yellow-500">KB Dashboard</div>
-          <div className="space-x-4">
-            <a href="#" className="text-gray-600 hover:text-yellow-500">
-              개인
-            </a>
-            <a href="#" className="text-gray-600 hover:text-yellow-500">
-              기업
-            </a>
-            <a href="#" className="text-gray-600 hover:text-yellow-500">
-              금융상품
-            </a>
-            <a href="#" className="text-gray-600 hover:text-yellow-500">
-              자산관리
-            </a>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
@@ -75,11 +65,19 @@ export default function Dashboard() {
           <div className="lg:col-span-2 space-y-8">
             {/* Fear & Greed Index */}
             <div className="bg-white rounded-lg shadow-md p-6 border-t-4 border-yellow-500">
-              <h2 className="text-2xl font-semibold mb-4">
-                Fear & Greed Index
-              </h2>
+              <div className="flex">
+                <h2 className="text-2xl font-semibold mb-4">
+                  Fear & Greed Index
+                </h2>
+                <h2 className="text-2xl font-semibold mb-4">
+                  Fear & Greed Index
+                </h2>
+              </div>
               <ResponsiveGauge value={fearGreedIndex} />
-              <SingleDatePicker onDateChange={handleSingleDateChange} />
+              <SingleDatePicker
+                onDateChange={handleSingleDateChange}
+                dateData={fearGreedIndexDate.toISOString().split("T")[0]}
+              />
             </div>
 
             {/* Market Trends */}

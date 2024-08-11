@@ -2,10 +2,16 @@
 
 import React, { useState } from "react";
 
-const SingleDatePicker = ({ onDateChange }) => {
-  const [date, setDate] = useState("");
+const SingleDatePicker = ({
+  onDateChange,
+  dateData,
+}: {
+  onDateChange: (date: string) => void;
+  dateData: string;
+}) => {
+  const [date, setDate] = useState(dateData);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     onDateChange(date);
   };
