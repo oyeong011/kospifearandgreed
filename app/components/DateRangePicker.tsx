@@ -14,7 +14,7 @@ const DateRangePicker = ({
   const [startDate, setStartDate] = useState(mockStartDate);
   const [endDate, setEndDate] = useState(mockEndDate);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: any) => {
     e.preventDefault();
     onDateRangeChange(startDate, endDate);
   };
