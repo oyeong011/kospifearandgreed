@@ -29,6 +29,23 @@ const calculateMovingAverage = (
   return result;
 };
 
+//각 지표에서 z_score_grade를 받아와서 공포 탐욕 정도를 계산 12.5이 최대이고 0이 최소 5 대 4 대 2 대 4 대 5 등분으로 극도의 공포 공포 중립 탐욕 극도의 탐욕으로 나누어짐
+
+const fearOrGreed = (z_score_grade: number) => {
+  let result = "";
+  if (z_score_grade >= 10) {
+    result = "Extreme Greed";
+  } else if (z_score_grade >= 8) {
+    result = "Greed";
+  } else if (z_score_grade >= 6) {
+    result = "Neutral";
+  } else if (z_score_grade >= 4) {
+    result = "Fear";
+  } else {
+    result = "Extreme Fear";
+  }
+  return result;
+};
 const LineChart: React.FC<LineChartProps> = ({
   data,
   showMovingAverage,
@@ -220,6 +237,10 @@ const LineChart: React.FC<LineChartProps> = ({
 
   return (
     <div ref={containerRef} style={{ width: "100%", height: "400px" }}>
+      {/* 구한 데이터중 가장 마지막 데이터를 가져와서 공포 탐욕 정도를 계산 */}
+      <h2 className="text-xl font-semibold mb-4 border-solid border-r-2">
+        {fearOrGreed(data[data.length - 1].value)}
+      </h2>
       <svg ref={svgRef} style={{ width: "100%", height: "100%" }} />
     </div>
   );
