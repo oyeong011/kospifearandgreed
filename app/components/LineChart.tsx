@@ -88,10 +88,6 @@ const LineChart: React.FC<LineChartProps> = ({
       const minValue = d3.min(data, (d) => d.value) as number;
       const maxValue = d3.max(data, (d) => d.value) as number;
 
-      console.log("title", title);
-      console.log("data", data[data.length - 1].value);
-      console.log("last data", data[data.length - 1]);
-
       const includeZero = minValue > 0 && maxValue > 0;
       const includeNegative = minValue < 0;
 
