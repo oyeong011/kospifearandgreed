@@ -66,7 +66,6 @@ const NewsSection = () => {
   ];
   return (
     <div className="p-5">
-      <h2 className="text-xl font-semibold mb-4">금일 코스피 주요뉴스</h2>
       <ul className="space-y-4">
         {newsData.map((news, index) => (
           <li key={index} className="p-3 border border-gray-300 rounded-md">

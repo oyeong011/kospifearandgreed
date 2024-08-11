@@ -118,7 +118,9 @@ export default function Dashboard() {
 
             {/* Latest News */}
             <div className="bg-white rounded-lg shadow-md p-6 border-t-4 border-yellow-500">
-              <h2 className="text-2xl font-semibold mb-4">Latest News</h2>
+              <h2 className="text-2xl font-semibold mb-4">
+                금일 코스피 주요뉴스
+              </h2>
               <NewsSection />
             </div>
           </div>

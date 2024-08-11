@@ -15,11 +15,10 @@ const PortfolioRecommendationCharts = () => {
     {
       title: "1안: 성장 중심 포트폴리오",
       data: [
-        { name: "주식", value: 50 },
-        { name: "채권", value: 20 },
-        { name: "현금", value: 10 },
-        { name: "금", value: 10 },
-        { name: "채권", value: 10 },
+        { name: "채권", value: 30 },
+        { name: "주식", value: 40 },
+        { name: "현금", value: 5 },
+        { name: "금", value: 20 },
       ],
       description:
         "이 포트폴리오는 높은 수익을 추구하는 투자자에게 적합합니다.",
@@ -37,10 +36,11 @@ const PortfolioRecommendationCharts = () => {
     {
       title: "2안: 안정 중심 포트폴리오",
       data: [
-        { name: "채권", value: 30 },
-        { name: "주식", value: 40 },
-        { name: "현금", value: 5 },
-        { name: "금", value: 20 },
+        { name: "주식", value: 50 },
+        { name: "채권", value: 20 },
+        { name: "현금", value: 10 },
+        { name: "금", value: 10 },
+        { name: "채권", value: 10 },
       ],
       description:
         "이 포트폴리오는 안정적인 수익을 원하는 투자자에게 적합합니다.",
