@@ -46,52 +46,82 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">Market Dashboard</h1>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 space-y-8">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold mb-4">Fear & Greed Index</h2>
-            <ResponsiveGauge value={fearGreedIndex} />
-            <SingleDatePicker onDateChange={handleSingleDateChange} />
-          </div>
-
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold mb-4">Market Trends</h2>
-            <DateRangePicker
-              onDateRangeChange={handleDateRangeChange}
-              mockStartDate={startDate.toISOString().split("T")[0]}
-              mockEndDate={endDate.toISOString().split("T")[0]}
-            />
-            <div className="space-y-8 mt-6">
-              {Object.entries(marketData).map(([key, data]) => (
-                <LineChart
-                  key={key}
-                  data={data}
-                  showMovingAverage={
-                    key === "momentumData" || key === "marketVolatilityData"
-                  }
-                  title={key
-                    .replace(/([A-Z])/g, " $1")
-                    .replace(/^./, (str) => str.toUpperCase())}
-                />
-              ))}
-            </div>
+    <div className="bg-gray-100 min-h-screen">
+      {/* Navigation Bar */}
+      <nav className="bg-white shadow-md">
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <div className="text-2xl font-bold text-yellow-500">KB Dashboard</div>
+          <div className="space-x-4">
+            <a href="#" className="text-gray-600 hover:text-yellow-500">
+              개인
+            </a>
+            <a href="#" className="text-gray-600 hover:text-yellow-500">
+              기업
+            </a>
+            <a href="#" className="text-gray-600 hover:text-yellow-500">
+              금융상품
+            </a>
+            <a href="#" className="text-gray-600 hover:text-yellow-500">
+              자산관리
+            </a>
           </div>
         </div>
+      </nav>
 
-        <div className="space-y-8">
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold mb-4">
-              오늘의 추천 포트폴리오 구성
-            </h2>
-            <PortfolioPieChart />
+      {/* Main Content */}
+      <div className="container mx-auto px-4 py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column */}
+          <div className="lg:col-span-2 space-y-8">
+            {/* Fear & Greed Index */}
+            <div className="bg-white rounded-lg shadow-md p-6 border-t-4 border-yellow-500">
+              <h2 className="text-2xl font-semibold mb-4">
+                Fear & Greed Index
+              </h2>
+              <ResponsiveGauge value={fearGreedIndex} />
+              <SingleDatePicker onDateChange={handleSingleDateChange} />
+            </div>
+
+            {/* Market Trends */}
+            <div className="bg-white rounded-lg shadow-md p-6 border-t-4 border-yellow-500">
+              <h2 className="text-2xl font-semibold mb-4">Market Trends</h2>
+              <DateRangePicker
+                onDateRangeChange={handleDateRangeChange}
+                mockStartDate={startDate.toISOString().split("T")[0]}
+                mockEndDate={endDate.toISOString().split("T")[0]}
+              />
+              <div className="space-y-8 mt-6">
+                {Object.entries(marketData).map(([key, data]) => (
+                  <LineChart
+                    key={key}
+                    data={data}
+                    showMovingAverage={
+                      key === "momentumData" || key === "marketVolatilityData"
+                    }
+                    title={key
+                      .replace(/([A-Z])/g, " $1")
+                      .replace(/^./, (str) => str.toUpperCase())}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-semibold mb-4">Latest News</h2>
-            <NewsSection />
+          {/* Right Column */}
+          <div className="space-y-8">
+            {/* Portfolio Recommendation */}
+            <div className="bg-white rounded-lg shadow-md p-6 border-t-4 border-yellow-500">
+              <h2 className="text-2xl font-semibold mb-4">
+                AI가 포트폴리오를 추천해줬어요!
+              </h2>
+              <PortfolioPieChart />
+            </div>
+
+            {/* Latest News */}
+            <div className="bg-white rounded-lg shadow-md p-6 border-t-4 border-yellow-500">
+              <h2 className="text-2xl font-semibold mb-4">Latest News</h2>
+              <NewsSection />
+            </div>
           </div>
         </div>
       </div>
