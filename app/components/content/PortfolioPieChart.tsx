@@ -16,7 +16,7 @@ const PortfolioPieChart = () => {
     { asset: "현금", value: 10 },
     { asset: "주식", value: 30 },
     { asset: "코인", value: 20 },
-    { asset: "기타", value: 10 },
+    { asset: "금", value: 10 },
   ];
 
   useEffect(() => {

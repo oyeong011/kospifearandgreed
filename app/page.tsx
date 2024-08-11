@@ -8,6 +8,7 @@ import SingleDatePicker from "./components/SingleDatePicker";
 import PortfolioPieChart from "./components/content/PortfolioPieChart";
 import NewsSection from "./components/content/NewsSection";
 import Navbar from "./components/Navbar/Navbar";
+import PortfolioRecommendationCharts from "./components/content/PortfolioRecommendationCharts";
 
 export default function Dashboard() {
   const [startDate, setStartDate] = useState(new Date("2023-08-01"));
@@ -67,10 +68,7 @@ export default function Dashboard() {
             <div className="bg-white rounded-lg shadow-md p-6 border-t-4 border-yellow-500">
               <div className="flex">
                 <h2 className="text-2xl font-semibold mb-4">
-                  Fear & Greed Index
-                </h2>
-                <h2 className="text-2xl font-semibold mb-4">
-                  Fear & Greed Index
+                  KOSPI FEAR & GREED INDEX
                 </h2>
               </div>
               <ResponsiveGauge value={fearGreedIndex} />
@@ -82,7 +80,9 @@ export default function Dashboard() {
 
             {/* Market Trends */}
             <div className="bg-white rounded-lg shadow-md p-6 border-t-4 border-yellow-500">
-              <h2 className="text-2xl font-semibold mb-4">Market Trends</h2>
+              <h2 className="text-2xl font-semibold mb-4">
+                공포탐욕 지수 지표
+              </h2>
               <DateRangePicker
                 onDateRangeChange={handleDateRangeChange}
                 mockStartDate={startDate.toISOString().split("T")[0]}
@@ -112,7 +112,8 @@ export default function Dashboard() {
               <h2 className="text-2xl font-semibold mb-4">
                 AI가 포트폴리오를 추천해줬어요!
               </h2>
-              <PortfolioPieChart />
+              {/* <PortfolioPieChart /> */}
+              <PortfolioRecommendationCharts />
             </div>
 
             {/* Latest News */}
