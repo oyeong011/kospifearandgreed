@@ -4,6 +4,7 @@ interface DataPoint {
   date: Date;
   value: number;
   ma?: number;
+  z_score_grade?: number;
 }
 
 async function readCSV(filename: string): Promise<any[]> {
@@ -83,6 +84,7 @@ export async function getMarketMomentum(
     date: new Date(row.date),
     value: parseFloat(row.종가),
     ma: parseFloat(row.MA125),
+    z_score_grade: parseFloat(row.z_score_grade),
   }));
   return filterDataByDateRange(parsedData, startDate, endDate);
 }
@@ -95,6 +97,7 @@ export async function getPCRatio(
   const parsedData = data.map((row) => ({
     date: new Date(row.date),
     value: parseFloat(row["P/C Ratio"]),
+    z_score_grade: parseFloat(row.z_score_grade),
   }));
   return filterDataByDateRange(parsedData, startDate, endDate);
 }
@@ -108,6 +111,7 @@ export async function getMarketVolatility(
     date: new Date(row.date),
     value: parseFloat(row.종가),
     ma: parseFloat(row.MA50),
+    z_score_grade: parseFloat(row.z_score_grade),
   }));
   return filterDataByDateRange(parsedData, startDate, endDate);
 }
@@ -120,6 +124,7 @@ export async function getSafeHavenDemand(
   const parsedData = data.map((row) => ({
     date: new Date(row.date),
     value: parseFloat(row.Safe_Haven_Demand),
+    z_score_grade: parseFloat(row.z_score_grade),
   }));
   return filterDataByDateRange(parsedData, startDate, endDate);
 }
@@ -132,6 +137,7 @@ export async function getJunkBondDemand(
   const parsedData = data.map((row) => ({
     date: new Date(row.date),
     value: parseFloat(row.z_score_grade),
+    z_score_grade: parseFloat(row.z_score_grade),
   }));
   return filterDataByDateRange(parsedData, startDate, endDate);
 }
@@ -144,6 +150,7 @@ export async function getKRXReturn(
   const parsedData = data.map((row) => ({
     date: new Date(row.date),
     value: parseFloat(row.return),
+    z_score_grade: parseFloat(row.z_score_grade),
   }));
   return filterDataByDateRange(parsedData, startDate, endDate);
 }
@@ -156,6 +163,7 @@ export async function getMSI(
   const parsedData = data.map((row) => ({
     date: new Date(row.date),
     value: parseFloat(row.MSI),
+    z_score_grade: parseFloat(row.z_score_grade),
   }));
   return filterDataByDateRange(parsedData, startDate, endDate);
 }

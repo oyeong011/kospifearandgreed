@@ -7,6 +7,13 @@ import { motion } from "framer-motion";
 interface DataPoint {
   date: Date;
   value: number;
+  z_score_grade: number;
+}
+
+interface DataFormat {
+  date: string;
+  value: number;
+  z_score_grade: number;
 }
 
 interface LineChartProps {
@@ -24,7 +31,7 @@ const calculateMovingAverage = (
     const windowData = data.slice(i - windowSize + 1, i + 1);
     const average =
       windowData.reduce((acc, curr) => acc + curr.value, 0) / windowData.length;
-    result.push({ date: data[i].date, value: average });
+    result.push({ date: data[i].date, value: average, z_score_grade: 0 });
   }
   return result;
 };
@@ -80,9 +87,10 @@ const LineChart: React.FC<LineChartProps> = ({
 
       const minValue = d3.min(data, (d) => d.value) as number;
       const maxValue = d3.max(data, (d) => d.value) as number;
+
       console.log("title", title);
-      console.log("minValue", minValue);
-      console.log("maxValue", maxValue);
+      console.log("data", data[data.length - 1].value);
+      console.log("last data", data[data.length - 1]);
 
       const includeZero = minValue > 0 && maxValue > 0;
       const includeNegative = minValue < 0;
@@ -239,7 +247,7 @@ const LineChart: React.FC<LineChartProps> = ({
     <div ref={containerRef} style={{ width: "100%", height: "400px" }}>
       {/* 구한 데이터중 가장 마지막 데이터를 가져와서 공포 탐욕 정도를 계산 */}
       <h2 className="text-xl font-semibold mb-4 border-solid border-r-2">
-        {fearOrGreed(data[data.length - 1].value)}
+        {fearOrGreed(data[data.length - 1].z_score_grade)}
       </h2>
       <svg ref={svgRef} style={{ width: "100%", height: "100%" }} />
     </div>
