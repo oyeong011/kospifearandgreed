@@ -1,5 +1,4 @@
-https://kospifearandgreed.vercel.app/
-
+<a hlt="https://kospifearandgreed.vercel.app/">
 <img width="1010" alt="image" src="https://github.com/user-attachments/assets/995240be-9368-4a8c-acba-c26affe7f7b2">
 <img width="1013" alt="image" src="https://github.com/user-attachments/assets/5471ed6a-4dcc-4c28-bfcf-8e18e9bded29">
 <img width="1015" alt="image" src="https://github.com/user-attachments/assets/65dcbf54-0a0a-4543-8845-527119b9955e">
